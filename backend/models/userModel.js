@@ -1,8 +1,8 @@
-import mongoose from 'mongoose';const mongoose = require('mongoose')
-const { Schema, model } = mongoose
-const bip39 = require('bip39')
-const crypto = require('crypto')
-const { create } = require('./Schemas/User')
+import mongoose from 'mongoose'
+import { Schema, model } from mongoose
+import bip39 from 'bip39'
+import crypto from 'crypto'
+// import { create } from './Schemas/User'
 
 mongoose.set('strictQuery', true)
 
@@ -81,4 +81,5 @@ const createEncryptedPassPhrase = () => {
 }
 
 const User = mongoose.model('User', userSchema);
+
 export default User;
