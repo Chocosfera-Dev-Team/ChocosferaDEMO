@@ -8,13 +8,16 @@ mongoose.set('strictQuery', true)
 
 const userSchema = new Schema(
   {
-    publicAddress: { type: String, required: true, unique: true },
+    // publicAddress: { type: String, required: true, unique: true },
+    publicAddress: { type: String, required: false, unique: true },
     passphrase: { type: Array, default: () => createEncryptedPassPhrase() },
-    telegramID: { type: Number, required: true, unique: true },
+    // telegramID: { type: Number, required: true, unique: true },
+    telegramID: { type: Number, required: false, unique: true },
     telegramName: { type: String, required: false },
     telegramUsername : { type: String, required: false },
     telegramLink: { type: String, required: false, default: "no_link" },
-    telegramPhone: { type: Number, required: true, unique: true },
+    // telegramPhone: { type: Number, required: true, unique: true },
+    telegramPhone: { type: Number, required: false, unique: true },
     telegramVerifiedPhone: { type: Boolean, default: false },
     telegramVerifiedEmail: { type: Boolean, default: false },
     telegramReferer: { type: Number, required: false },
