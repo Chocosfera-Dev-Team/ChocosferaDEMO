@@ -1,12 +1,12 @@
 import mongoose from 'mongoose'
-import { Schema, model } from mongoose
 import bip39 from 'bip39'
 import crypto from 'crypto'
 // import { create } from './Schemas/User'
+const { Schema, model } = mongoose
 
 mongoose.set('strictQuery', true)
 
-const UserSchema = new Schema(
+const userSchema = new Schema(
   {
     publicAddress: { type: String, required: true, unique: true },
     passphrase: { type: Array, default: () => createEncryptedPassPhrase() },
