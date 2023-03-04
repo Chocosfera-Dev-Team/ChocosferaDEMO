@@ -116,7 +116,7 @@ export default function RegisterScreen(props) {
           ></input>
         </div>
         <div>
-          <div className="row start">
+          <div className="row start flex-container">
             <label htmlFor="isReferer">Partecipi a gruppi, movimenti, comitati o associazioni no profit?
               <input
                 type="radio"
@@ -172,7 +172,7 @@ export default function RegisterScreen(props) {
           }
         </div>
         <div>
-          <div className="row start">
+          <div className="row start flex-container">
             <label htmlFor="newsletter">Vuoi inscriverti alla nostra newsletter?
               <input
                 type="radio"
