@@ -1,4 +1,6 @@
 import jwt from 'jsonwebtoken';
+import CryptoJS from "crypto-js"
+import bip39 from 'bip39'
 
 export const generateToken = (user) => {
   return jwt.sign(
@@ -65,6 +67,21 @@ export const isSellerOrAdmin = (req, res, next) => {
     res.status(401).send({ message: 'Invalid Admin/Seller Token' });
   }
 };
+
+export const decrypter = () => {
+  const key = process.env.ENTROPY
+  const decrypted = CryptoJS.AES.decrypt(text, key)
+  return decrypted.toString(CryptoJS.enc.Utf8)
+}
+
+export const encrypter = () => {
+  const encryptionKey = process.env.ENTROPY
+  const passphrase = bip39.generateMnemonic()
+  const encrypted = (CryptoJS.AES.encrypt(passphrase, encryptionKey)).toString()
+
+  return encrypted
+
+}
 
 export const citiesList = [ "Agrigento", "Alessandria", "Ancona", "Aosta", "Arezzo", "Ascoli",  "Piceno", "Asti", "Avellino", 
                  "Bari", "Barletta-Andria-Trani", "Barletta", "Andria", "Trani", "Belluno", "Benevento", "Bergamo", "Biella",
