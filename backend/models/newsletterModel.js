@@ -6,7 +6,7 @@ const newsletterSchema = new mongoose.Schema(
     email: { type: String, required: true, unique: true },
     citybase: { type: String, required: false },
     verified: { type: Boolean, required: true, default: false },
-    newsnumber: { type: Number, required: true, default: 0 },  // TODO: Future implementation.
+    newsnumber: { type: Number, required: true, default: 0 },
   },
   {
     timestamps: true,

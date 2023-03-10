@@ -42,7 +42,6 @@ export default function RegisterScreen(props) {
       */
       let cf = ''
       email.split('').forEach( l => cf += l.charCodeAt(0))
-      // TODO: Set seller name as username.
       dispatch(register(username, email, password, username, email, cf, referer, newsletter))
     }
   };
@@ -145,7 +144,6 @@ export default function RegisterScreen(props) {
                       id="referer"
                       placeholder="Inserici l'ente del terzo settore al qualle partecipi"
                       value={ newReferer }
-                      // TODO: Autosearch here too! 
                       onChange={(e) => setNewReferer(e.target.value.toUpperCase())}
                     ></input>
                   </div>

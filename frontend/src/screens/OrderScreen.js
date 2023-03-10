@@ -83,7 +83,6 @@ export default function OrderScreen(props) {
   const askAnotherEmail = (e) => {
     e.preventDefault()
     let envelop = { buyer: userInfo.username, emailBody, order }
-    // TODO debug
     if(mailing){
       dispatch(mailingOrder(envelop))
     } else {

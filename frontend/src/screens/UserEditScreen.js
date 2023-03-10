@@ -43,7 +43,6 @@ export default function UserEditScreen(props) {
   const submitHandler = (e) => {
     e.preventDefault();
     // dispatch update user
-    // TODO: Add hasAd option.
     dispatch(updateUser({ _id: userId, name, email, isSeller, isAdmin }));
   };
   return (

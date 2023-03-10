@@ -64,6 +64,7 @@ export default function ProfileScreen() {
     return dateFnsFormat(date, format, { locale })
   }
 
+  // TODO: change smart contract
   async function getSetBalance(account) {
     let balance = await _contract.methods.balanceOf(account).call()
     balance = parseFloat(balance) / 100
@@ -107,7 +108,6 @@ export default function ProfileScreen() {
   const CalFORMAT = 'dd/MM/yyyy'
   const userSignin = useSelector((state) => state.userSignin)
   const { userInfo } = userSignin
-  // TODO: Delete referer from userInfo
   const userDetails = useSelector((state) => state.userDetails)
   const { loading, error, user } = userDetails
   const userUpdateProfile = useSelector((state) => state.userUpdateProfile)
@@ -120,7 +120,6 @@ export default function ProfileScreen() {
   const dispatch = useDispatch()
 
   useEffect(() => {
-    // TODO: For security reasons split db
     window.scrollTo(0, 0)
     if (!user) {
       dispatch({ type: USER_UPDATE_PROFILE_RESET })
@@ -310,7 +309,7 @@ export default function ProfileScreen() {
                   onChange={(e) => setBirthplace(e.target.value.toUpperCase())}
                 ></input>
               </div>
-              <div>
+              {/* <div>
                 <label htmlFor="cf">Codice Fiscale *</label>
                 <input
                   type="text"
@@ -326,7 +325,7 @@ export default function ProfileScreen() {
                                     }
                   }
                 ></input>
-              </div>
+              </div> */}
               <div>
                 <h2>Dettagli contatto:</h2>
                 <label htmlFor="email">Email **</label>
@@ -369,7 +368,7 @@ export default function ProfileScreen() {
                   onChange={(e) => setPhone(e.target.value)}
                 ></input>
               </div>
-              <div>
+              {/* <div>
                 { referer.length === 0 ?
                   (<div className="row start flex-container">
                     <label htmlFor="isReferer">Partecipi a gruppi, movimenti, comitati o associazioni no profit?
@@ -403,7 +402,6 @@ export default function ProfileScreen() {
                             id="referer"
                             placeholder="Inserici al massimo numero cinque associazioni."
                             value={ newReferer }
-                            // TODO: Autosearch here!
                             onChange={(e) => setNewReferer(e.target.value.toUpperCase())}
                           ></input>
                       </div>
@@ -431,7 +429,7 @@ export default function ProfileScreen() {
                       </div>
                     ):''
                 }
-              </div>
+              </div> */}
               <div>
                 <h2>Iscrizione Newsletter:</h2>
                 {newsletter === "Verified" ? <MessageBox variant="success">Iscritto</MessageBox>  : <MessageBox variant="info">Non iscritto</MessageBox> }
@@ -486,7 +484,7 @@ export default function ProfileScreen() {
                       onChange={(e) => setSellerLink(e.target.value)}
                     ></input>
                   </div>
-                  <div>
+                  {/* <div>
                     <label htmlFor="partitaIva">Partita IVA</label>
                     <input
                       id="partitaIva"
@@ -495,7 +493,7 @@ export default function ProfileScreen() {
                       value={!partitaIva.match(/GMT/)?partitaIva:''}
                       onChange={(e) => setPartitaIva(e.target.value)}
                     ></input>
-                  </div>
+                  </div> */}
                   <div>
                     <label htmlFor="sellerDescription">Descrizione Offerente</label>
                     <textarea
