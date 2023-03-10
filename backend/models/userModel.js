@@ -35,7 +35,7 @@ const userSchema = new Schema(
     gender: { type: String, enum:["M", "F"], required: false },
     city: { type: String, required: false, uppercase: true },
     country: { type: String, required: false },
-    roles: { type: string, required: true, default: roles.User  },
+    role: { type: string, required: true, default: roles.User  },
     hasAd: { type: Boolean, default: false, required: true },
     activity: { type: Number, default: 0, require: false },
     inscriptionBlock: { type: Number, required: true, default: 0 },
