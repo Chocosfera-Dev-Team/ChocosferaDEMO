@@ -1,17 +1,17 @@
-# Pagine azzurre ECommerce Website
-![pagine_azzurre](/pagine-azzurre.png)
+# Chocosfera Beta Dapp
+![Chocosfera Beta](/ChocolateBar.png)
 
 ## Demo Website
 
-- 👉 Heroku : [https://pagine-azzurre.herokuapp.com](https://newamazona-final.herokuapp.com)
+- 👉 Heroku : [https://chocosfera.com](https://chocosfera.com)
 
 ## Run Locally
 
 ### 1. Clone repo
 
 ```
-$ git clone git@github.com:valazco/pagine_azzurre.git
-$ cd pagine_azzurre
+$ git clone git@github.com:Chocosfera-Dev-Team/ChocosferaDEMO.git
+$ cd ChocosferaDEMO
 ```
 
 ### 2. Setup MongoDB
@@ -19,7 +19,7 @@ $ cd pagine_azzurre
 - Local MongoDB
   - Install it from [here](https://www.mongodb.com/try/download/community)
   - Create .env file in root folder
-  - Set MONGODB_URL=mongodb://localhost/pagine-azzurre  
+  - Set MONGODB_URL=mongodb://localhost/chocosfera_demo  
 - Atlas Cloud MongoDB
   - Create database at [https://cloud.mongodb.com](https://cloud.mongodb.com)
   - Create .env file in root folder
