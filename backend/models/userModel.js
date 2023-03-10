@@ -1,7 +1,6 @@
 import mongoose from 'mongoose'
 import { encrypter } from '../utils.js' 
 
-// import { create } from './Schemas/User'
 const { Schema, model } = mongoose
 
 mongoose.set('strictQuery', true)
@@ -9,7 +8,6 @@ mongoose.set('strictQuery', true)
 const userSchema = new Schema(
   {
     username: { type: String, required: true, unique: true, uppercase: true },
-    // publicAddress: { type: String, required: true, unique: true },
     publicAddress: { type: String, required: false, unique: true },
     passphrase: { type: Array, default: () => encrypter() },
     // telegramID: { type: Number, required: true, unique: true },
@@ -56,40 +54,6 @@ const roles = { "Admin": "Admin",
                 "Farmer": "Farmer", 
                 "User" : "User", 
               }
-
-// const createEncryptedPassPhrase = () => {
-//     dotenv.config()
-//     const passphrase = bip39.generateMnemonic()
-//     // const encryptionKey = process.env.ENCRYPTION_KEY // Get from crypto.randomBytes(32)
-//     const encryptionKey = crypto.randomBytes(32) // Get from crypto.randomBytes(32)
-//     // const iv = process.env.IV // Get from crypto.randomBytes(16)
-//     const iv = crypto.randomBytes(16) // Get from crypto.randomBytes(16)
-//     const cipher = crypto.createCipheriv('aes-256-cbc', encryptionKey, iv)
-//     let encrypted = cipher.update(passphrase, 'utf8', 'hex')
-//     encrypted += cipher.final('hex')
-    
-//     console.log(`Passphrase: ${passphrase}`)
-//     console.log(`Encrypted passphrase: ${encrypted}`)
-//     console.log(`Encryption key: ${encryptionKey.toString('hex')}`)
-//     console.log(`IV: ${iv.toString('hex')}`)
-
-
-//   // TODO: Use in user wallet as a function
-//   /*
-//   const encrypted = '...'; // Replace with your actual encrypted passphrase
-//   const encryptionKeyBuff = Buffer.from( encryptionKey, 'hex' ); // Replace with your actual encryption key
-//   const iv2 = Buffer.from( iv, 'hex' ); // Replace with your actual IV
-
-//   // Create a decipher using AES-256-CBC algorithm
-//   const decipher = crypto.createDecipheriv('aes-256-cbc', encryptionKey, iv)
-
-//   // Decrypt the encrypted passphrase using the decipher
-//   let decrypted = decipher.update(encrypted, 'hex', 'utf8');
-//   decrypted += decipher.final('utf8')
-
-//   console.log(`Decrypted passphrase: ${decrypted}`)
-//   */
-// }
 
 const User = mongoose.model('User', userSchema);
 
