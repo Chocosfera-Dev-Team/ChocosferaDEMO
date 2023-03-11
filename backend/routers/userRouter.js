@@ -5,7 +5,7 @@ import data from '../data.js';
 import User from '../models/userModel.js';
 import Newsletter from '../models/newsletterModel.js';
 import dotenv from 'dotenv'
-import { generateToken, isAdmin, isAuth } from '../utils.js';
+import { generateToken, isAdmin, isAuth, generateAddresses } from '../utils.js';
 import sgMail from "@sendgrid/mail"
 import Web3 from 'web3'
 // import HDWalletProvider from '@truffle/hdwallet-provider'
