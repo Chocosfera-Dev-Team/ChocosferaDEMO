@@ -85,8 +85,8 @@ userRouter.post(
           phone: user.phone,
           email: user.email,
           referer: user.referer,
-          isAdmin: user.isAdmin,
-          isSeller: user.isSeller,
+          isAdmin: user.role.Admin ? true : false,
+          isSeller: user.role.Artist || user.role.Farmer ? true : false,
           hasAd: user.hasAd,
           token: generateToken(user),
           verified: user.verify.verified,
@@ -105,28 +105,23 @@ userRouter.post(
     let createdUser
     let mail
     const userPassword = bcrypt.hashSync(req.body.password, 8)
-    const userAccount = await web3.eth.accounts.create((userPassword + process.env.ENTROPY))
     const trusted_link = uuidv4()
     const isUser = await User.findOne({ email: req.body.email })
     const isUsername = await User.findOne({ username: req.body.username })
-    if(!isUser && !isUsername){
+    if ( !isUser && !isUsername ) {
       const user = new User({
-        account: userAccount.address,
-        accountKey: userAccount.privateKey,
         username: req.body.username,
-        cf: req.body.cf,
         email: req.body.email,
         phone: req.body.phone,
         password: userPassword,
         seller: { name: req.body.sellername },
         referer: req.body.referer,
-        isSeller: true,
         hasAd: false,
         verify: { trusted_link }
       })
       createdUser = await user.save()
       if ( createdUser.email === req.body.email ) {
-        if (req.body.newsletter) {
+        if ( req.body.newsletter ) {
           subscriber = await Newsletter.findOne({ email: req.body.email })
           if (!subscriber) {
             const newsletterRegistry = new Newsletter({ email: req.body.email, verified: true })
@@ -284,13 +279,13 @@ userRouter.get(
       user.referer = req.body.referer || user.referer;
       user.isSeller = req.body.referer || user.isSeller;
       user.hasAd = req.body.hasAd || user.hasAd;
-      if (user.isSeller) {
+      if ( user.isSeller ) {
         user.seller.name = req.body.sellerName || user.seller.name;
         user.seller.logo = req.body.sellerLogo || user.seller.logo;
         user.seller.description =
           req.body.sellerDescription || user.seller.description;
       }
-      if (req.body.password) {
+      if ( req.body.password ) {
         user.password = bcrypt.hashSync(req.body.password, 8);
       }
       const updatedUser = await user.save();
@@ -305,46 +300,47 @@ userRouter.get(
         hasAd: updatedUser.hasAd,
         token: generateToken(updatedUser),
         verified: updatedUser.verify.verified,
-      });
+      })
     }
   })
-);
+)
 
 userRouter.get(
   '/',
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
-    const users = await User.find({});
-    res.send(users);
+    const users = await User.find({})
+    res.send(users)
   })
-);
+)
 
 userRouter.delete(
   '/:id',
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
-    const user = await User.findById(req.params.id);
+    const user = await User.findById(req.params.id)
     if (user) {
+      // TODO: Don't hardcode, use env variable 
       if (user.email === 'admin@example.com') {
-        res.status(400).send({ message: 'Can Not Delete Admin User' });
+        res.status(400).send({ message: 'Can Not Delete Admin User' })
         return;
       }
       const deleteUser = await user.remove();
-      res.send({ message: 'User Deleted', user: deleteUser });
+      res.send({ message: 'User Deleted', user: deleteUser })
     } else {
-      res.status(404).send({ message: 'User Not Found' });
+      res.status(404).send({ message: 'User Not Found' })
     }
   })
-);
+)
 
 userRouter.put(
   '/:id',
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
-    const user = await User.findById(req.params.id);
+    const user = await User.findById(req.params.id)
     if (user) {
       user.name = req.body.name || user.name;
       user.email = req.body.email || user.email;
@@ -352,9 +348,9 @@ userRouter.put(
       user.isAdmin = Boolean(req.body.isAdmin);
       // user.isAdmin = req.body.isAdmin || user.isAdmin;
       const updatedUser = await user.save();
-      res.send({ message: 'User Updated', user: updatedUser });
+      res.send({ message: 'User Updated', user: updatedUser })
     } else {
-      res.status(404).send({ message: 'User Not Found' });
+      res.status(404).send({ message: 'User Not Found' })
     }
   })
 );
@@ -363,7 +359,7 @@ userRouter.put(
   '/upgrade/:id',
   isAuth,
   expressAsyncHandler(async (req, res) => {
-    const user = await User.findById(req.user._id);
+    const user = await User.findById(req.user._id)
     if (!user.hasAd) {
       user.hasAd = true;
       const upgradedUser = await user.save();
@@ -389,22 +385,22 @@ userRouter.put(
         token: generateToken(user),
       });
     } else {
-      res.status(404).send({ message: 'User Not Found' });
+      res.status(404).send({ message: 'User Not Found' })
     }
   })
-);
+)
 
 userRouter.post(
   '/password-recovery',
   expressAsyncHandler(async (req, res) => {
-    const data = await User.find({ email: req.body.email });
-    if (data[0].email === req.body.email) {
+    const data = await User.findOne({ email: req.body.email });
+    if (data.email === req.body.email) {
       res.send({email: true, loading: false })
-      data[0].recoveryPasswordId = Web3.utils.keccak256(data[0].password)
-      let recipient = msgPasswordRecovery(data[0].email, data[0].recoveryPasswordId)
+      data.recoveryPasswordId = Web3.utils.keccak256(data.password)
+      let recipient = msgPasswordRecovery(data.email, data.recoveryPasswordId)
       sgMail.send(recipient)
         .then(() => {
-          const newUserState =  async () => { await data[0].save() }
+          const newUserState =  async () => { await data.save() }
           newUserState()
         })
         .catch((error) => {
@@ -415,19 +411,19 @@ userRouter.post(
       res.status(404).send({ message: 'Email Not Found' })
     } 
   })
-);
+)
 
 userRouter.post(
   '/password-replacement',
   expressAsyncHandler(async (req, res) => {
-    const user = await User.find({ recoveryPasswordId: req.body.id });
-    if (user[0].recoveryPasswordId === req.body.id) {
-      user[0].password = bcrypt.hashSync(req.body.newData, 8)
-      user[0].recoveryPasswordId = ''
-      let recipient = msgPasswordReplaced(user[0].email, user[0].username)
+    const user = await User.findOne({ recoveryPasswordId: req.body.id })
+    if (user.recoveryPasswordId === req.body.id) {
+      user.password = bcrypt.hashSync(req.body.newData, 8)
+      user.recoveryPasswordId = ''
+      let recipient = msgPasswordReplaced(user.email, user.username)
       sgMail.send(recipient)
         .then(() => {
-          const newUserState =  async () => { await user[0].save() }
+          const newUserState =  async () => { await user.save() }
           newUserState()
           res.send({password_replacement: true })
         })
@@ -440,7 +436,7 @@ userRouter.post(
       res.status(404).send({ message: 'Process has failed' })
     } 
   })
-);
+)
 
 userRouter.get(
   '/newsletter/:email',
@@ -485,10 +481,10 @@ userRouter.post(
 userRouter.post(
   '/newsletterVerify',
   expressAsyncHandler(async (req, res) => {
-    let subscriber = await Newsletter.find({ email: req.body.email })
+    let subscriber = await Newsletter.findOne({ email: req.body.email })
     if (subscriber){
-      subscriber[0].verified = true
-      subscriber[0].save()
+      subscriber.verified = true
+      subscriber.save()
       res.status(200).send({ name: subscriber })
       return 
     } else if (subscriber.email && !subscriber.verified) {
@@ -504,10 +500,10 @@ userRouter.post(
 userRouter.post(
   '/newsletterUpdate',
   expressAsyncHandler(async (req, res) => {
-    let subscriber = await Newsletter.find({ email: req.body.email })
-    if(subscriber[0]) {
-      subscriber[0].verified = !subscriber[0].verified
-      subscriber[0].save()
+    let subscriber = await Newsletter.findOne({ email: req.body.email })
+    if ( subscriber ) {
+      subscriber.verified = !subscriber.verified
+      subscriber.save()
     } else {
       subscriber = new Newsletter({
         name: req.body.username,
@@ -523,17 +519,18 @@ userRouter.post(
 userRouter.post(
   '/verification/:id',
   expressAsyncHandler(async (req, res) => {
-    let data = await User.find({ 'verify.trusted_link': req.body.uuid })
-    if(!data[0].verify.verified) {
-      data[0].verify.verified = true
-      data[0].save()
+    let data = await User.findOne({ 'verify.trusted_link': req.body.uuid })
+    if(!data.verify.verified) {
+      data.verify.verified = true
+      data.account = generateAddresses(data.passphrase) 
+      data.save()
       let mail
-      let newsletterStatus = await Newsletter.findOne({ email: data[0].email })
+      let newsletterStatus = await Newsletter.findOne({ email: data.email })
       if(newsletterStatus) {
-        if(newsletterStatus.verified) mail = msgRegistration( data[0].email, data[0].username, true )
-        if(!newsletterStatus.verified) mail = msgRegistration( data[0].email, data[0].username, false)
+        if(newsletterStatus.verified) mail = msgRegistration( data.email, data.username, true )
+        if(!newsletterStatus.verified) mail = msgRegistration( data.email, data.username, false)
       } else {
-        mail = msgRegistration( data[0].email, data[0].username, false)
+        mail = msgRegistration( data.email, data.username, false)
       }
       res.status(200).send({ uuid: data })
       sgMail.send(mail)

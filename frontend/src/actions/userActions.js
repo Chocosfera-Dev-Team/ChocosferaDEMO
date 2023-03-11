@@ -347,7 +347,7 @@ export const userVerifyAccount = (uuid) => async (dispatch) => {
   dispatch({ type: USER_VERIFY_ACCOUNT_REQUEST })
   try {
     const { data } = await Axios.post('/api/users/verification/:id', { uuid } )
-    if(data.uuid[0].verify.verified){
+    if(data.uuid.verify.verified){
       dispatch({ type: USER_VERIFY_ACCOUNT_SUCCESS, payload: data.uuid[0] })
     }
   } catch(error) {

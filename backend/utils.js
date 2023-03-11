@@ -1,25 +1,27 @@
-import jwt from 'jsonwebtoken';
+import jwt from 'jsonwebtoken'
 import CryptoJS from "crypto-js"
 import bip39 from 'bip39'
+import ethers from "ethers"
 
-export const generateToken = (user) => {
+
+export const generateToken = ( user ) => {
   return jwt.sign(
     {
       _id: user._id,
       name: user.name,
       email: user.email,
-      isAdmin: user.isAdmin,
-      isSeller: user.isSeller,
+      isAdmin: user.role.Admin ? true : false,
+      isSeller: user.role.Artist || user.role.Farmer ? true : false,
     },
     process.env.JWT_SECRET || 'somethingsecret',
     {
       expiresIn: '1d',
     }
-  );
-};
+  )
+}
 
-export const userBecomesOfferer = (user) => {
-  if (user.name && user.surname && user.birthday && user.birthplace && user.gender && user.cf){
+export const userBecomesOfferer = ( user ) => {
+  if ( user.name && user.surname && user.birthday && user.birthplace && user.gender && user.cf ) {
     return true
   }
   return false
@@ -34,40 +36,43 @@ export const isAuth = (req, res, next) => {
       process.env.JWT_SECRET || 'somethingsecret',
       (err, decode) => {
         if (err) {
-          res.status(401).send({ message: 'Token scaduto. Esci e riaccedi' });
+          res.status(401).send({ message: 'Token scaduto. Esci e riaccedi' })
         } else {
-          req.user = decode;
-          next();
+          req.user = decode
+          next()
         }
       }
-    );
+    )
   } else {
-    res.status(401).send({ message: 'No Token' });
+    res.status(401).send({ message: 'No Token' })
   }
-};
-export const isAdmin = (req, res, next) => {
-  if (req.user && req.user.isAdmin) {
+}
+export const isAdmin = ( req, res, next ) => {
+  let isAdmin = req.user.role.Admin ? true : false
+  if ( isAdmin ) {
     next();
   } else {
-    res.status(401).send({ message: 'Invalid Admin Token' });
+    res.status(401).send({ message: 'Invalid Admin Token' })
   }
 };
-export const isSeller = (req, res, next) => {
-  if (req.user && req.user.isSeller) {
-    next();
+export const isSeller = ( req, res, next ) => {
+  let isSeller = req.user.role.Artist || req.user.role.Farmer ? true : false
+  if ( isSeller ) {
+    next()
   } else {
-    res.status(401).send({ message: 'Invalid Seller Token' });
+    res.status(401).send({ message: 'Invalid Seller Token' })
   }
-};
-export const isSellerOrAdmin = (req, res, next) => {
-  if (req.user && (req.user.isSeller || req.user.isAdmin)) {
-    next();
+}
+export const isSellerOrAdmin = ( req, res, next ) => {
+  let isSellerOrAdmin = req.user.role.Artist || req.user.role.Farmer  || req.user.role.Admin ? true : false
+  if ( isSellerOrAdmin ) {
+    next()
   } else {
-    res.status(401).send({ message: 'Invalid Admin/Seller Token' });
+    res.status(401).send({ message: 'Invalid Admin/Seller Token' })
   }
-};
+}
 
-export const decrypter = () => {
+export const decrypter = ( text ) => {
   const key = process.env.ENTROPY
   const decrypted = CryptoJS.AES.decrypt(text, key)
   return decrypted.toString(CryptoJS.enc.Utf8)
@@ -79,7 +84,20 @@ export const encrypter = () => {
   const encrypted = (CryptoJS.AES.encrypt(passphrase, encryptionKey)).toString()
 
   return encrypted
+}
 
+export const generateAddresses = ( passphrase ) => {
+  let mnemonic = decrypter(passphrase)
+  const wallet = ethers.Wallet.fromMnemonic(mnemonic)
+
+  return wallet.address
+}
+
+export const RandomString = () => {
+  const passphrase = bip39.generateMnemonic()
+  const encrypted = (CryptoJS.AES.encrypt(passphrase, 'randomString')).toString().split(1,34)[0]
+  console.log(encrypted)
+  return encrypted
 }
 
 export const citiesList = [ "Agrigento", "Alessandria", "Ancona", "Aosta", "Arezzo", "Ascoli",  "Piceno", "Asti", "Avellino", 

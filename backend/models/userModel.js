@@ -1,17 +1,22 @@
 import mongoose from 'mongoose'
-import { encrypter } from '../utils.js' 
+import { encrypter, RandomString } from '../utils.js' 
 
 const { Schema, model } = mongoose
 
 mongoose.set('strictQuery', true)
 
+const roles = { Admin  : "Admin",
+                Artist : "Artist",
+                Farmer : "Farmer", 
+                User   : "User", 
+              }
+
 const userSchema = new Schema(
   {
     username: { type: String, required: true, unique: true, uppercase: true },
-    publicAddress: { type: String, required: false, unique: true },
-    passphrase: { type: Array, default: () => encrypter() },
+    account: { type: String, required: true, unique: true, default: () => RandomString() },
+    passphrase: { type: String, required: true, default: () => encrypter() },
     // telegramID: { type: Number, required: true, unique: true },
-    telegramID: { type: Number, required: false, unique: true },
     telegramName: { type: String, required: false },
     telegramUsername : { type: String, required: false },
     telegramLink: { type: String, required: false, default: "no_link" },
@@ -26,7 +31,7 @@ const userSchema = new Schema(
     surname: { type: String, required: false },
     email: { type: String, required: true, unique: true, trim: true },
     password: { type: String, required: true },
-    recoveryPasswordId: { type: String, require: false, default: ''},
+    recoveryPasswordId: { type: String, require: false, default: '' },
     language: { type: String, required: false },
     refereeNumber: { type: Number, required: true, default: 0 },
     listXeBook: { type: Array, required: true, default: 0 },
@@ -35,7 +40,7 @@ const userSchema = new Schema(
     gender: { type: String, enum:["M", "F"], required: false },
     city: { type: String, required: false, uppercase: true },
     country: { type: String, required: false },
-    role: { type: string, required: true, default: roles.User  },
+    role: { type: String, enum: Object.values(roles), required: true, default: roles.User },
     hasAd: { type: Boolean, default: false, required: true },
     activity: { type: Number, default: 0, require: false },
     inscriptionBlock: { type: Number, required: true, default: 0 },
@@ -48,12 +53,6 @@ const userSchema = new Schema(
     timestamps: true,
   }
 )
-
-const roles = { "Admin": "Admin",
-                "Artist": "Artist",
-                "Farmer": "Farmer", 
-                "User" : "User", 
-              }
 
 const User = mongoose.model('User', userSchema);
 
