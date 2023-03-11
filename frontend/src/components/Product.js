@@ -38,7 +38,8 @@ export default function Product({ product }) {
           <div className="card__details">
             <div className="card__product-seller">
               <Link to={`/product/${product._id}`}>
-                {product.seller.seller.name}
+                {product.seller.username}
+                {/* {product.seller.seller.name} */}
               </Link>
             </div>
             <Rating

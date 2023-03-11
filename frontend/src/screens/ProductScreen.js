@@ -103,20 +103,21 @@ export default function ProductScreen(props) {
                     Offerente{" "}
                     <h2>
                       <Link to={`/seller/${product.seller._id}`}>
-                        {product.seller.seller.name}
+                        {/* {product.seller.seller.name} */}
+                        {product.seller.username}
                       </Link>
                     </h2>
-                    {product.seller.seller.logo && (
+                    {/* {product.seller.seller.logo && (
                       <img
                         className="medium"
                         src={product.seller.seller.logo}
                         alt={product.seller.seller.name}
                       />
-                    )}
-                    <Rating
+                    )} */}
+                    {/* <Rating
                       rating={product.seller.seller.rating}
                       numReviews={product.seller.seller.numReviews}
-                    ></Rating>
+                    ></Rating> */}
                   </li>
                   <li>
                     <div className="row start">

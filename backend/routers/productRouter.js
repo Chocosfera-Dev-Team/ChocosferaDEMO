@@ -66,7 +66,8 @@ productRouter.get(
       ...priceFilter,
       ...ratingFilter,
     })
-      .populate('seller', 'seller.name seller.logo')
+      // .populate('seller', 'seller.name seller.logo')
+      .populate('seller', 'username')
       .sort(sortOrder)
       .skip(pageSize * (page - 1))
       .limit(pageSize);
