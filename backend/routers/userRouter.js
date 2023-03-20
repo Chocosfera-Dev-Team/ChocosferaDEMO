@@ -5,7 +5,7 @@ import data from '../data.js';
 import User from '../models/userModel.js';
 import Newsletter from '../models/newsletterModel.js';
 import dotenv from 'dotenv'
-import { generateToken, isAdmin, isAuth } from '../utils.js';
+import { generateAddresses, generateToken, isAdmin, isAuth } from '../utils.js';
 import sgMail from "@sendgrid/mail"
 import Web3 from 'web3'
 // import HDWalletProvider from '@truffle/hdwallet-provider'
@@ -69,7 +69,7 @@ userRouter.post(
   expressAsyncHandler(async (req, res) => {
     const user = await User.findOne({ email: req.body.email });
     if (user) {
-      if (bcrypt.compareSync(req.body.password, user.password)) {   
+      if (bcrypt.compareSync(req.body.password, user.password)) {  
         res.send({
           _id: user._id,
           account: user.account,
@@ -85,8 +85,10 @@ userRouter.post(
           phone: user.phone,
           email: user.email,
           referer: user.referer,
-          isAdmin: user.role.Admin ? true : false,
-          isSeller: user.role.Artist || user.role.Farmer ? true : false,
+          // isAdmin: user.role.Admin ? true : false,
+          isAdmin: user.role === 'Admin',
+          // isSeller: user.role.Artist || user.role.Farmer ? true : false,
+          isSeller: user.role === 'Farmer' || user.role === 'Artist',
           hasAd: user.hasAd,
           token: generateToken(user),
           verified: user.verify.verified,

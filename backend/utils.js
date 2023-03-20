@@ -2,6 +2,7 @@ import jwt from 'jsonwebtoken'
 import CryptoJS from "crypto-js"
 import bip39 from 'bip39'
 import ethers from "ethers"
+import User from './models/userModel.js'
 
 
 export const generateToken = ( user ) => {
@@ -34,11 +35,14 @@ export const isAuth = (req, res, next) => {
     jwt.verify(
       token,
       process.env.JWT_SECRET || 'somethingsecret',
-      (err, decode) => {
+      // (err, decode) => {
+      async (err, decode) => {
         if (err) {
           res.status(401).send({ message: 'Token scaduto. Esci e riaccedi' })
         } else {
-          req.user = decode
+          // req.user = decode
+          const userObj = await User.findOne({ _id: decode._id })
+          req.user = {...decode, role: userObj.role}
           next()
         }
       }
@@ -47,8 +51,11 @@ export const isAuth = (req, res, next) => {
     res.status(401).send({ message: 'No Token' })
   }
 }
+
+
 export const isAdmin = ( req, res, next ) => {
-  let isAdmin = req.user.role.Admin ? true : false
+  // let isAdmin = req.user.role.Admin ? true : false
+  let isAdmin = req.user.role === 'Admin'
   if ( isAdmin ) {
     next();
   } else {
@@ -56,7 +63,8 @@ export const isAdmin = ( req, res, next ) => {
   }
 };
 export const isSeller = ( req, res, next ) => {
-  let isSeller = req.user.role.Artist || req.user.role.Farmer ? true : false
+  // let isSeller = req.user.role.Artist || req.user.role.Farmer ? true : false
+  let isSeller = req.user.role === 'Artist' || req.user.role === 'Farmer'
   if ( isSeller ) {
     next()
   } else {
@@ -64,7 +72,9 @@ export const isSeller = ( req, res, next ) => {
   }
 }
 export const isSellerOrAdmin = ( req, res, next ) => {
-  let isSellerOrAdmin = req.user.role.Artist || req.user.role.Farmer  || req.user.role.Admin ? true : false
+  // let isSellerOrAdmin = req.user.role.Artist || req.user.role.Farmer  || req.user.role.Admin ? true : false
+  let isSellerOrAdmin = req.user.role === 'Artist' || req.user.role === 'Farmer'  || req.user.role === 'Admin'
+
   if ( isSellerOrAdmin ) {
     next()
   } else {
